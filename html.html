@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  body {
+    padding: 0;
+    margin: 0;
+  }
+
+  #selected-color,
+  #hovered-color {
+    width: 100px;
+    height: 100px;
+  }
+
+  #container {
+    width: 100vw;
+    height: 500px;
+  }
+</style>
+
+<body>
+  <canvas id="canvas" width="300" height="227"></canvas>
+  <canvas id="zoom" width="300" height="227"></canvas>
+  <div>
+    <label for="smoothbtn">
+      <input type="checkbox" name="smoothbtn" checked="checked" id="smoothbtn">
+      Enable image smoothing
+    </label>
+  </div>
+
+</body>
+
+<script>
+  var img = new Image();
+  img.src = './img/page1.jpeg';
+  img.onload = function () {
+    draw(this);
+  };
+
+  function draw(img) {
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    img.style.display = 'none';
+    var zoomctx = document.getElementById('zoom').getContext('2d');
+
+    var smoothbtn = document.getElementById('smoothbtn');
+    var toggleSmoothing = function (event) {
+      zoomctx.imageSmoothingEnabled = this.checked;
+      zoomctx.mozImageSmoothingEnabled = this.checked;
+      zoomctx.webkitImageSmoothingEnabled = this.checked;
+      zoomctx.msImageSmoothingEnabled = this.checked;
+    };
+    smoothbtn.addEventListener('change', toggleSmoothing);
+
+    var zoom = function (event) {
+      var x = event.layerX;
+      var y = event.layerY;
+      zoomctx.drawImage(canvas,
+        Math.abs(x - 5),
+        Math.abs(y - 5),
+        10, 10,
+        0, 0,
+        200, 200);
+    };
+
+    canvas.addEventListener('mousemove', zoom);
+  }
+</script>
+
+</html>
